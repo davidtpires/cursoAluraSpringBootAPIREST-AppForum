@@ -1,13 +1,16 @@
 package br.com.alura.forum.controller;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.alura.forum.controller.dto.TopicoDto;
 import br.com.alura.forum.controller.dto.TopicoForm;
@@ -37,10 +40,18 @@ public class TopicosController {
 
 	}
 	
+//	Criando método cadastrar com verbo Post e parametros form como dto restringindo o projeto e a Uri para atenter o retorno ResponseEntity
 	@PostMapping
-	public void cadastrar(@RequestBody TopicoForm form) {
+	public ResponseEntity<TopicoDto> cadastrar(@RequestBody TopicoForm form, UriComponentsBuilder uriBuilder) {
+		//Convertendo a clase dto de for para topico
 		Topico topico = form.converter(cursoRepository);
+		//salvando topico no banco de dados
 		topicoRepository.save(topico);
+		
+		//setando o uri do metodo Response Entity
+		URI uri = uriBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
+		//retornando uri e topico no corpo da resposta
+		return ResponseEntity.created(uri).body(new TopicoDto(topico));
 	}
 
 }
