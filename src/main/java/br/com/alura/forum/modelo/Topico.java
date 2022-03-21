@@ -39,6 +39,7 @@ public class Topico {
 		this.titulo = titulo;
 		this.mensagem = mensagem;
 		this.curso = curso;
+		System.out.println("Mensagem: "+mensagem);
 	}
 
 
